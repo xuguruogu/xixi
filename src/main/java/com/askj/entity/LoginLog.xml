@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.askj.entity.LoginLog">
+	<insert id="insert" parameterType="com.askj.entity.LoginLog">
+		INSERT INTO t_loginlog (
+			customerID,
+			loginTime
+		) VALUES (
+			#{customer.id},
+			#{loginTime}
+		)
+	</insert>
+	
+	<select id="selectCount" parameterType="com.askj.entity.Page" resultType="int">
+		SELECT COUNT(*) 
+		FROM 
+			t_loginlog l JOIN t_customer c ON l.customerID = c.id 
+		WHERE 1=1 AND 
+		(
+			c.nickname LIKE '%${searchText}%'
+		)
+	</select>
+	
+	<select id="select_by_page" parameterType="com.askj.entity.Page" resultMap="logResult">
+		SELECT 
+			l.id,
+			c.id as cid,
+			c.nickname as cnickname,
+			l.loginTime
+		FROM 
+			t_loginlog l JOIN t_customer c ON l.customerID = c.id 
+		WHERE 1=1 AND 
+		(
+			c.nickname LIKE '%${searchText}%'
+		) 
+		ORDER BY loginTime DESC 
+		LIMIT #{startIndex},#{pageSize}
+	</select>
+	<resultMap type="com.askj.entity.LoginLog" id="logResult">
+		<id column="id" property="id"/>
+		<result column="loginTime" property="loginTime"/>
+		<association property="customer" javaType="com.askj.entity.Customer">
+			<id column="cid" property="id"/>
+			<result column="cnickname" property="nickname"/>
+		</association>
+	</resultMap>
+</mapper>

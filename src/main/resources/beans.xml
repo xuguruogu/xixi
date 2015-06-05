@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Middle tier application context definition for the image database.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+		 xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+				http://www.springframework.org/schema/aop
+        		http://www.springframework.org/schema/aop/spring-aop.xsd" >
+		
+		<!-- 打开注解注入 -->
+		<context:annotation-config/>
+		<context:component-scan base-package="com.askj"/>
+		<!-- 添加AOP annotation支持 -->
+		<aop:aspectj-autoproxy/>
+		
+		<!-- 配置数据源 -->
+		<bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource">
+			<!-- 基本参数 -->
+			<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+			<property name="url" value="jdbc:mysql://192.168.33.10:3306/xixi?useUnicode=true&amp;characterEncoding=UTF-8"></property>
+			<property name="username" value="xixi"></property>
+			<property name="password" value="xixipwd"></property>
+			
+			<!-- 配置连接池的参数 -->
+			<property name="initialSize" value="1"></property>
+			<!-- 连接的最大数量 -->
+			<property name="maxActive" value="500"></property>
+			<!-- 空闲时，连接数降低到最小值 -->
+			<property name="maxIdle" value="2"></property>
+			<!-- 空闲时连接池的最小值 -->
+			<property name="minIdle" value="1"></property>
+			<!-- 最大等待时间 -->
+			<property name="maxWait" value="1000"></property>
+		</bean>
+		
+		<!-- 配置Hibernate  SessionFactory   annotation方式 -->
+		<bean id="sqlsessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+			<!-- 将数据源配置进来 -->
+			<property name="dataSource" ref="dataSource"></property>
+			<!-- 配置mapper -->
+			<property name="mapperLocations" value="classpath:com/askj/entity/*.xml"></property>
+			<!-- 配置xml简写 -->
+			<property name="typeAliasesPackage" value="com.askj.entity"></property>
+		</bean>
+		
+		<!-- 将mybaties交给Spring管理其事务 -->
+		<!-- 配置事务管理器 -->
+		<bean id="txmanager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="dataSource"></property>
+		</bean>
+		
+		<!-- 配置advisor，来确定哪些数据库操作需要加入事务控制 
+		<tx:advice id="txadvice" transaction-manager="txmanager">
+			<tx:attributes>
+				<tx:method name="*" propagation="REQUIRED"/>
+			</tx:attributes>
+		</tx:advice>
+		-->
+</beans>

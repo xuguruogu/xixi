@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.askj.entity.Post">
+	<insert id="insert" parameterType="com.askj.entity.Post">
+		INSERT INTO t_post 
+		(
+			title,
+			content,
+			publishTime,
+			lastUpTime,
+			publisherID	
+		)VALUES 
+		(
+			#{title},
+			#{content},
+			#{publishTime},
+			#{lastUpTime},
+			#{publisher.id}	
+		)
+	</insert>
+	
+	<delete id="delete_by_id" parameterType="int">
+		DELETE FROM t_post WHERE id=#{id}
+	</delete>
+	
+	<update id="updateTop" parameterType="com.askj.entity.Post">
+		UPDATE t_post SET orderNum=#{orderNum} WHERE id=#{id}
+	</update>
+	
+	<update id="updateLastUpTime" parameterType="com.askj.entity.Post">
+		UPDATE t_post SET lastUpTime=#{lastUpTime},commentCount=#{commentCount} WHERE id=#{id}
+	</update>
+	
+	<update id="updatePostLike" parameterType="com.askj.entity.Post">
+		UPDATE t_post SET likeCount=#{likeCount},likeIds=#{likeIds} WHERE id=#{id}
+	</update>
+	
+	<select id="selectOrderNum" resultType="int">
+		SELECT orderNum FROM t_post ORDER BY orderNum DESC LIMIT 1
+	</select>
+	
+	<select id="select_by_page" parameterType="com.askj.entity.Page" resultMap="postResult">
+		SELECT 
+			p.id as id,
+			p.title as title,
+			p.likeCount as likeCount,
+			c.headPic as pHeadPic
+		FROM 
+			t_post p JOIN t_customer c ON p.publisherID=c.id
+		ORDER BY 
+			p.orderNum DESC,
+			p.lastUpTime DESC,
+			p.likeCount DESC  
+		LIMIT #{startIndex},#{pageSize}
+	</select>
+	
+	<select id="select_by_page_admin" parameterType="com.askj.entity.Page" resultMap="postResult">
+		SELECT 
+			p.id as id,
+			p.title as title,
+			CAST(p.content AS CHAR CHARACTER SET utf8) AS content,
+			p.publishTime as publishTime,
+			p.lastUpTime as lastUpTime,
+			p.likeCount as likeCount,
+			p.commentCount as commentCount,
+			p.orderNum as orderNum,
+			c.id as pId,
+			c.nickname as pNickname
+		FROM
+			t_post p JOIN t_customer c ON p.publisherID = c.id 
+		WHERE 
+			1=1 AND (
+			p.title LIKE '%${searchText}%' OR 
+			c.nickname LIKE '%${searchText}%'
+			) 
+		ORDER BY 
+			orderNum DESC,
+			publishTime DESC 
+		LIMIT #{startIndex},#{pageSize}
+	</select>
+	
+	<select id="select_by_id" parameterType="int" resultMap="postResult">
+		SELECT
+			p.id as id,
+			p.title as title,
+			CAST(p.content AS CHAR CHARACTER SET utf8) AS content,
+			c1.id as pId,
+			c1.nickname as pNickname,
+			c1.headPic as pHeadPic,
+			c1.sex as pSex,
+			p.likeCount as likeCount,
+			p.publishTime as publishTime,
+			p.likeIDs as likeIds,
+			p.commentCount as commentCount,
+			pr.id as prId,
+			pr.postID as prPostID,
+			c2.id as prParentReplierID,
+			c2.nickname as prParentReplierNickname,
+			CAST(pr.content AS CHAR CHARACTER SET utf8) AS prContent,
+			c3.id as prReplierID,
+			c3.nickname as prReplierNickname
+		FROM
+			t_post p JOIN t_customer c1 ON p.publisherID = c1.id 
+			LEFT JOIN 
+			(
+				t_postreplies pr JOIN t_customer c2 ON pr.parentReplierID = c2.id 
+				JOIN t_customer c3 ON pr.replierID = c3.id	
+			)
+			ON pr.postID = p.id
+		WHERE p.id=#{id} 
+		ORDER BY pr.id
+	</select>
+	
+	<select id="selectCount" parameterType="com.askj.entity.Page" resultType="int">
+		SELECT COUNT(*) FROM 
+			t_post p JOIN t_customer c ON p.publisherID = c.id 
+		WHERE 
+			1 = 1 AND (
+			p.title LIKE '%${searchText}%' OR 
+			c.nickname LIKE '%${searchText}%'
+			)
+		
+	</select>
+	
+	<resultMap type="com.askj.entity.Post" id="postResult">
+		<id column="id" property="id"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="likeCount" property="likeCount"/>
+		<result column="publishTime" property="publishTime"/>
+		<result column="likeIds" property="likeIds"/>
+		<result column="commentCount" property="commentCount"/>
+		<result column="lastUpTime" property="lastUpTime"/>
+		<result column="orderNum" property="orderNum"/>
+		<association property="publisher" javaType="com.askj.entity.Customer">
+			<id column="pId" property="id"/>
+			<result column="pNickname" property="nickname"/>
+			<result column="pHeadPic" property="headPic"/>
+			<result column="pSex" property="sex"/>
+		</association>
+		<collection property="replies" ofType="com.askj.entity.PostReplies" column="postID">
+			<id column="prId" property="id"/>
+			<result column="prPostID" property="postID"/>
+			<result column="prContent" property="content"/>
+			<association property="parentReplier" javaType="com.askj.entity.Customer">
+				<id column="prParentReplierID" property="id"/>
+				<result column="prParentReplierNickname" property="nickname"/>
+			</association>
+			<association property="replier" javaType="com.askj.entity.Customer">
+				<id column="prReplierID" property="id"/>
+				<result column="prReplierNickname" property="nickname"/>
+			</association>
+		</collection>
+	</resultMap>
+</mapper>

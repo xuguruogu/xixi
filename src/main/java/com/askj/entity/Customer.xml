@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.askj.entity.Customer">
+	<insert id="regist" parameterType="com.askj.entity.Customer">
+		INSERT INTO t_customer 
+		(
+			headPic,
+			nickname,
+			school,
+			email,
+			password,
+			sex,
+			age,
+			registTime,
+			status
+		) 
+		VALUES 
+		(
+			#{headPic},
+			#{nickname},
+			#{school},
+			#{email},
+			#{password},
+			#{sex},
+			#{age},
+			#{registTime},
+			#{status}
+		)
+	</insert>
+	
+	<update id="updateStatus" parameterType="com.askj.entity.Customer">
+		UPDATE t_customer SET status=#{status} WHERE id=#{id}
+	</update>
+	
+	<update id="updatePassword" parameterType="com.askj.entity.Customer">
+		UPDATE t_customer SET password=#{password} WHERE id=#{id}
+	</update>
+	
+	<update id="update" parameterType="com.askj.entity.Customer">
+		UPDATE t_customer SET 
+			headPic=#{headPic},
+			nickname=#{nickname},
+			age=#{age},
+			label=#{label}
+		WHERE id=#{id}
+	</update>
+	
+	<select id="checkEmail" parameterType="String" resultType="com.askj.entity.Customer">
+		SELECT * FROM t_customer WHERE email=#{email} LIMIT 1
+	</select>
+	
+	<select id="select_by_id" parameterType="int" resultType="com.askj.entity.Customer">
+		SELECT * FROM t_customer WHERE id=#{id}
+	</select>
+	
+	<select id="login" parameterType="com.askj.entity.Customer" resultType="com.askj.entity.Customer">
+		SELECT * FROM t_customer WHERE email=#{email} AND password=#{password}
+	</select>
+	
+	<select id="selectCount" parameterType="com.askj.entity.Page" resultType="int">
+		SELECT COUNT(*) FROM t_customer WHERE 1=1 AND 
+		(
+			nickname LIKE '%${searchText}%' OR 
+			school LIKE '%${searchText}%' OR 
+			email LIKE '%${searchText}%' OR 
+			sex LIKE '%${searchText}%' OR 
+			age LIKE '%${searchText}%' OR 
+			label LIKE '%${searchText}%' 
+		)
+	</select>
+	
+	<select id="select_by_page" parameterType="com.askj.entity.Page" resultType="com.askj.entity.Customer">
+		SELECT * FROM t_customer WHERE 1=1 AND 
+		(
+			nickname LIKE '%${searchText}%' OR 
+			school LIKE '%${searchText}%' OR 
+			email LIKE '%${searchText}%' OR 
+			sex LIKE '%${searchText}%' OR 
+			age LIKE '%${searchText}%' OR 
+			label LIKE '%${searchText}%' OR  
+			registTime LIKE '%${searchText}%'  
+		) 
+		ORDER BY registTime DESC 
+		LIMIT #{startIndex},#{pageSize}
+	</select>
+	
+	<select id="look" parameterType="int" resultType="com.askj.entity.Customer">
+		SELECT 
+			id,
+			headPic,
+			nickname,
+			sex,
+			age,
+			school,
+			label 
+		FROM t_customer 
+		WHERE 
+			id=#{customerID}
+	</select>
+</mapper>
+  
+  
+  
