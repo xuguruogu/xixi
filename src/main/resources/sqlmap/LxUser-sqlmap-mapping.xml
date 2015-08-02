@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="LX_USER">
+	<resultMap type="LxUserDO" id="lxUserResult">
+		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="NUMERIC" />
+		<result property="gmtCreated" column="GMT_CREATED" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="gmtLastLogin" column="GMT_LASTLOGIN" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="username" column="USERNAME" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="password" column="PASSWORD" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="nickname" column="NICKNAME" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="realname" column="REALNAME" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="tel" column="TEL" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="email" column="EMAIL" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="sex" column="SEX" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="birthday" column="BIRTHDAY" javaType="java.util.Date" jdbcType="DATE" />
+		<result property="description" column="DESCRIPTION" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="portrait" column="PORTRAIT" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="status" column="STATUS" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="manager" column="MANAGER" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="gmtManaged" column="GMT_MANAGED" javaType="java.util.Date" jdbcType="DATE" />
+	</resultMap>
+
+
+	<insert id="insert" parameterType="LxUserDO">
+		INSERT INTO LX_USER (
+		USERNAME,
+		PASSWORD,
+		NICKNAME,
+		REALNAME,
+		TEL,
+		EMAIL,
+		SEX,
+		BIRTHDAY,
+		DESCRIPTION,
+		PORTRAIT)
+		VALUES (
+		#{username},
+		#{password},
+		#{nickname},
+		#{realname},
+		#{email},
+		#{tel},
+		#{sex},
+		#{birthday},
+		#{description},
+		#{portrait})
+	</insert>
+
+
+	<update id="update" parameterType="java.util.Map">
+		UPDATE LX_USER
+		<set>
+			NICKNAME = #{nickname},
+			REALNAME = #{realname},
+			TEL = #{tel},
+			EMAIL = #{email},
+			SEX = #{sex}
+			BIRTHDAY = #{birthday}
+		</set>
+		where id=#{id}
+	</update>
+
+	<update id="updatePassword" parameterType="java.util.Map">
+		UPDATE LX_USER
+		<set>
+			PASSWORD = #{password}
+		</set>
+		where id=#{id}
+	</update>
+	
+	<update id="updateDescription" parameterType="java.util.Map">
+		UPDATE LX_USER
+		<set>
+			DESCRIPTION = #{description}
+		</set>
+		where id=#{id}
+	</update>
+	
+	<update id="updatePortrait" parameterType="java.util.Map">
+		UPDATE LX_USER
+		<set>
+			PORTRAIT = #{portrait}
+		</set>
+		where id=#{id}
+	</update>
+
+	<update id="updateStatus" parameterType="java.util.Map">
+		UPDATE LX_USER
+		<set>
+			STATUS = #{status},
+			MANAGER = #{manager},
+			GMT_MANAGED = CURRENT_TIMESTAMP
+		</set>
+		where id=#{id}
+	</update>
+
+	<update id="updateLastLoginTime" parameterType="java.util.Map">
+		UPDATE
+		LX_USER set GMT_LASTLOGIN=CURRENT_TIMESTAMP WHERE
+		where id=#{id}
+	</update>
+
+
+	<select id="selectById" parameterType="long" resultMap="lxUserResult">
+		select * from LX_USER WHERE id=#{id}
+	</select>
+
+	<delete id="deleteById" parameterType="long">
+		delete from LX_USER
+		WHERE ID=#{id}
+	</delete>
+
+	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
+		select COUNT(*) from LX_USER
+		<include refid="QueryCondition" />
+	</select>
+
+	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="lxUserResult">
+		SELECT * FROM LX_USER
+		<include refid="QueryCondition" />
+		<include refid="Pagination" />
+	</select>
+
+
+	<!-- 查询条件 -->
+	<sql id="QueryCondition">
+		<trim prefix="where" prefixOverrides="and|or">
+
+			<if test="username != null or nickname != null or tel != null or email != null">
+				(
+				<trim prefixOverrides="and|or">
+					<if test="username != null">
+						USERNAME LIKE #{username}
+					</if>
+					<if test="nickname != null">
+						or NICKNAME LIKE #{nickname}
+					</if>
+					<if test="realname != null">
+						or REALNAME LIKE #{realname}
+					</if>
+					<if test="tel != null">
+						or TEL LIKE #{tel}
+					</if>
+					<if test="email != null">
+						or EMAIL LIKE #{email}
+					</if>
+				</trim>
+				)
+			</if>
+
+			<if test="sex != null">
+				and SEX LIKE #{sex}
+			</if>
+			<if test="status != null">
+				and STATUS LIKE #{status}
+			</if>
+			<if test="manager != null">
+				and MANAGER LIKE #{manager}
+			</if>
+			<if test="birthdayBegin != null ">
+                <![CDATA[
+				and BIRTHDAY >= #{birthdayBegin}
+				]]>
+			</if>
+			<if test="birthdayEnd != null ">
+                <![CDATA[
+				and BIRTHDAY <= #{birthdayEnd}
+				]]>
+			</if>
+			<if test="gmtCreatedBegin != null ">
+                <![CDATA[
+				and GMT_CREATED >= #{gmtCreatedBegin}
+				]]>
+			</if>
+			<if test="gmtCreatedEnd != null ">
+                <![CDATA[
+				and GMT_CREATED <= #{gmtCreatedEnd}
+				]]>
+			</if>
+			<if test="gmtLastLoginBegin != null ">
+                <![CDATA[
+				and GMT_LASTLOGIN >= #{gmtLastLoginBegin}
+				]]>
+			</if>
+			<if test="gmtLastLoginEnd != null ">
+                <![CDATA[
+				and GMT_LASTLOGIN <= #{gmtLastLoginEnd}
+				]]>
+			</if>
+			<if test="gmtManagedBegin != null ">
+                <![CDATA[
+				and GMT_MANAGED >= #{gmtManagedBegin}
+				]]>
+			</if>
+			<if test="gmtManagedEnd != null ">
+                <![CDATA[
+				and GMT_MANAGED <= #{gmtManagedEnd}
+				]]>
+			</if>
+		</trim>
+	</sql>
+
+	<!-- 分页 -->
+	<sql id="Pagination">
+		<if test="startIndex != null and pageSize != null">
+			LIMIT #{startIndex},#{pageSize}
+		</if>
+	</sql>
+
+</mapper>

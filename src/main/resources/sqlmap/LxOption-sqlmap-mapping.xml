@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="GB2312" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="LX_OPTION">
+	<resultMap type="LxOptionDO" id="lxOptionResult">
+		<id property="id" column="ID" javaType="java.lang.Long" jdbcType="NUMERIC" />
+		<result property="key" column="OPTION_KEY" javaType="java.lang.String" jdbcType="VARCHAR" />
+		<result property="value" column="OPTION_VALUE" javaType="java.lang.String" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<insert id="insert" parameterType="LxOptionDO">
+		INSERT INTO LX_OPTION (
+		OPTION_KEY,
+		OPTION_VALUE)
+		VALUES (
+		#{key},
+		#{value})
+	</insert>
+
+	<update id="updateValue" parameterType="java.util.Map">
+		UPDATE LX_OPTION
+		<set>
+			OPTION_VALUE = #{value}
+		</set>
+		where id=#{id}
+	</update>
+
+	<select id="selectById" parameterType="long" resultMap="lxOptionResult">
+		select * from LX_OPTION WHERE id=#{id}
+	</select>
+
+	<delete id="deleteById" parameterType="long">
+		delete from LX_OPTION
+		WHERE ID=#{id}
+	</delete>
+
+	<select id="selectCountByQueryCondition" parameterType="java.util.Map" resultType="long">
+		select COUNT(*) from LX_OPTION
+		<include refid="QueryCondition" />
+	</select>
+
+	<select id="selectByQueryCondition" parameterType="java.util.Map" resultMap="lxOptionResult">
+		SELECT * FROM LX_OPTION
+		<include refid="QueryCondition" />
+		<include refid="Pagination" />
+	</select>
+
+	<!-- 查询条件 -->
+	<sql id="QueryCondition">
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="key != null">
+				and OPTION_KEY LIKE #{key}
+			</if>
+		</trim>
+	</sql>
+
+
+	<!-- 分页 -->
+	<sql id="Pagination">
+		<if test="startIndex != null and pageSize != null">
+			LIMIT #{startIndex},#{pageSize}
+		</if>
+	</sql>
+</mapper>

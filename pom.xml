@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.xuguruogu</groupId>
 	<artifactId>xixiserver</artifactId>
@@ -9,42 +11,28 @@
 
 	<properties>
 		<!-- 主要依赖库的版本定义 -->
-		<springside.version>4.2.3-GA</springside.version>
 		<spring.version>4.0.5.RELEASE</spring.version>
-		<hibernate.version>4.3.5.Final</hibernate.version>
-		<spring-data-jpa.version>1.6.0.RELEASE</spring-data-jpa.version>
 		<tomcat-jdbc.version>7.0.53</tomcat-jdbc.version>
 		<sitemesh.version>2.4.2</sitemesh.version>
-		<shiro.version>1.2.3</shiro.version>
 		<hibernate-validator.version>5.0.3.Final</hibernate-validator.version>
 		<jackson.version>2.4.0</jackson.version>
 		<aspectj.version>1.7.4</aspectj.version>
 		<slf4j.version>1.7.7</slf4j.version>
-		<logback.version>1.1.2</logback.version>
+		<logback.version>1.0.13</logback.version>
 		<commons-lang3.version>3.3.2</commons-lang3.version>
 		<guava.version>17.0</guava.version>
 		<junit.version>4.11</junit.version>
 		<assertj.version>1.6.1</assertj.version>
 		<mockito.version>1.9.5</mockito.version>
 		<selenium.version>2.42.2</selenium.version>
-		<jetty.version>7.6.15.v20140411</jetty.version>
+		<jetty.version>8.1.8.v20121106</jetty.version>
 		<h2.version>1.3.176</h2.version>
 
 		<!-- Plugin的属性定义 -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.7</java.version>
 
-		<!-- 项目属性 -->
-		<jdbc.driver.groupId>mysql</jdbc.driver.groupId>
-		<jdbc.driver.artifactId>mysql-connector-java</jdbc.driver.artifactId>
-		<jdbc.driver.version>5.1.22</jdbc.driver.version>
 	</properties>
-
-	<prerequisites>
-		<maven>3.0.0</maven>
-	</prerequisites>
-
-
 
 	<!-- 依赖项定义 -->
 	<dependencies>
@@ -72,11 +60,11 @@
 
 		<!-- jdbc driver -->
 		<dependency>
-			<groupId>${jdbc.driver.groupId}</groupId>
-			<artifactId>${jdbc.driver.artifactId}</artifactId>
-			<version>${jdbc.driver.version}</version>
-			<scope>runtime</scope>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.36</version>
 		</dependency>
+
 		<!-- PERSISTENCE end -->
 
 		<!-- WEB begin -->
@@ -85,11 +73,11 @@
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 
+
 		<dependency>
 			<groupId>opensymphony</groupId>
 			<artifactId>sitemesh</artifactId>
-			<version>${sitemesh.version}</version>
-			<scope>runtime</scope>
+			<version>2.4.2</version>
 		</dependency>
 
 		<dependency>
@@ -104,6 +92,14 @@
 			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-api</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		
 		<!-- WEB end -->
 
 		<!-- JSR303 BeanValidator -->
@@ -134,40 +130,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-
-		<!-- 代码直接调用log4j会被桥接到slf4j -->
-		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
+			<artifactId>slf4j-log4j12</artifactId>
 			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
 		</dependency>
-		<!-- 代码直接调用common-logging会被桥接到slf4j -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<!-- 代码直接调用java.util.logging会被桥接到slf4j -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.googlecode.log4jdbc</groupId>
-			<artifactId>log4jdbc</artifactId>
-			<version>1.2</version>
-			<scope>runtime</scope>
-		</dependency>
+		
 		<!-- LOGGING end -->
 
 		<!-- GENERAL UTILS begin -->
@@ -221,12 +188,12 @@
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
-			<version>3.3.0</version>
+			<version>3.2.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis-spring</artifactId>
-			<version>1.2.2</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -266,6 +233,24 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.8.8</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+		</dependency>
+		
+		<!-- ace libs -->
+		<dependency>
+			<groupId>com.alibaba.appengine</groupId>
+			<artifactId>services-api</artifactId>
+			<version>1.4.15</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.10.19</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -280,7 +265,7 @@
 			<dependency>
 				<groupId>net.sf.ehcache</groupId>
 				<artifactId>ehcache-core</artifactId>
-				<version>2.6.9</version>
+				<version>2.6.8</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -330,7 +315,7 @@
 										<version>3.0.3</version>
 									</requireMavenVersion>
 									<requireJavaVersion>
-										<version>1.6</version>
+										<version>${java.version}</version>
 									</requireJavaVersion>
 									<bannedDependencies>
 										<searchTransitive>true</searchTransitive>
@@ -364,9 +349,16 @@
 						</systemProperties>
 						<useTestClasspath>true</useTestClasspath>
 
-	<!-- <scanIntervalSeconds>10</scanIntervalSeconds> -->
+						<!-- <scanIntervalSeconds>10</scanIntervalSeconds> -->
 						<stopKey>foo</stopKey>
 						<stopPort>9999</stopPort>
+
+						<systemProperties>
+							<systemProperty>
+								<name>spring.profiles.active</name>
+								<value>development</value>
+							</systemProperty>
+						</systemProperties>
 						
 						<webAppConfig>
 							<contextPath>/${project.artifactId}</contextPath>
@@ -399,6 +391,15 @@
 	</build>
 
 
+
+	<repositories>
+		<!-- repo for ace dependency -->
+		<repository>
+			<id>acesdk-repository</id>
+			<name>Ace Sdk Repository</name>
+			<url>http://acesdk.github.io/repo</url>
+		</repository>
+	</repositories>
 
 
 </project>
