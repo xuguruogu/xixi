@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.xuguruogu.lingxi.entity.XQZReplies">
+	<insert id="insert" parameterType="com.xuguruogu.lingxi.entity.XQZReplies">
+		INSERT INTO t_xqzreplies 
+		(
+			xqzID,
+			parentReplierID,
+			replierID,
+			content
+		) VALUES 
+		(
+			#{xqzID},
+			#{parentReplier.id},
+			#{replier.id},
+			#{content}
+		)
+	</insert>
+
+	<select id="select_by_xqzID" parameterType="int" resultMap="xqzRepliesRes">
+		SELECT 
+			x.id as id,
+			CAST(x.content AS CHAR CHARACTER SET utf8) AS content,
+			x.xqzID as xqzID,
+			c1.id as parentReplierID,
+			c1.nickname as parentReplierNickname,
+			c2.id as replierID,
+			c2.nickname as replierNickname 
+		FROM t_xqzreplies x JOIN t_customer c1 ON x.parentReplierID = c1.id 
+		JOIN t_customer c2 ON x.replierID = c2.id 
+		WHERE x.xqzID=#{id} 
+		ORDER BY x.id ASC
+	</select>
+	
+	<resultMap type="com.xuguruogu.lingxi.entity.XQZReplies" id="xqzRepliesRes">
+		<id column="id" property="id"/>
+		<result column="xqzID" property="xqzID"/>
+		<result column="content" property="content"/>
+		<association property="parentReplier" javaType="com.xuguruogu.lingxi.entity.Customer">
+			<id column="parentReplierID" property="id"></id>
+			<result column="parentReplierNickname" property="nickname"/>
+		</association>
+		<association property="replier" javaType="com.xuguruogu.lingxi.entity.Customer">
+			<id column="replierID" property="id"></id>
+			<result column="replierNickname" property="nickname"/>
+		</association>
+	</resultMap>
+</mapper>
