@@ -1,4 +1,4 @@
-package com.xuguruogu.lingxi.api.dto;
+package com.xuguruogu.lingxi.common.result;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

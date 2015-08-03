@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xuguruogu.lingxi.api.dto.Result;
-import com.xuguruogu.lingxi.api.dto.UserDTO;
+import com.xuguruogu.lingxi.common.dto.UserDTO;
+import com.xuguruogu.lingxi.common.result.Result;
 import com.xuguruogu.lingxi.core.facede.UserFacade;
 import com.xuguruogu.lingxi.entity.User;
 
